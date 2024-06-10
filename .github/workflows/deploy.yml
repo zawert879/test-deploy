@@ -57,21 +57,21 @@ jobs:
           docker pull ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_test-network_tag.outputs.test-network_tag }}
 
           # Start new containers
-          docker network create app-network || true
+          docker network create test-net --attachable || true
 
-          docker run -d --name test-back --network app-network ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_test-back_tag.outputs.test-back_tag }}
-          docker run -d --name test-front --network app-network ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_test-front_tag.outputs.test-front_tag }}
-          docker run -d --name test-network --network app-network -p 80:80 ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_test-network_tag.outputs.test-network_tag }}
+          docker run -d --name test-back --network test-net ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_test-back_tag.outputs.test-back_tag }}
+          docker run -d --name test-front --network test-net ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_test-front_tag.outputs.test-front_tag }}
+          docker run -d --name test-network --network test-net -p 80:81 ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_test-network_tag.outputs.test-network_tag }}
 #           docker pull ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }}
 #           docker pull ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }}
 #           docker pull ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }}
           
-#           docker service update --image ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }} test-back || docker service create --name test-back --network app-network --replicas 1 ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }}
-#           docker service update --image ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }} test-front || docker service create --name test-front --network app-network --replicas 1 ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }}
-#           docker service update --image ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }} test-network || docker service create --name test-network --network app-network --publish 80:80 --replicas 1 ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }}
+#           docker service update --image ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }} test-back || docker service create --name test-back --network test-net --replicas 1 ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }}
+#           docker service update --image ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }} test-front || docker service create --name test-front --network test-net --replicas 1 ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }}
+#           docker service update --image ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }} test-network || docker service create --name test-network --network test-net --publish 80:80 --replicas 1 ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }}
 
 
 
-# docker service update --image ghcr.io/zawert879/test-back:ca0157c test-back || docker service create --name test-back --network app-network --replicas 1 ghcr.io/zawert879/test-back:ca0157c
-# docker service update --image ghcr.io/zawert879/test-front:272a1f7 test-front || docker service create --name test-front --network app-network --replicas 1 ghcr.io/zawert879/test-front:272a1f7
-# docker service update --image ghcr.io/zawert879/test-network:46e84bf test-network || docker service create --name test-network --network app-network --publish 80:80 --replicas 1 ghcr.io/zawert879/test-network:46e84bf
+# docker service update --image ghcr.io/zawert879/test-back:ca0157c test-back || docker service create --name test-back --network test-net --replicas 1 ghcr.io/zawert879/test-back:ca0157c
+# docker service update --image ghcr.io/zawert879/test-front:272a1f7 test-front || docker service create --name test-front --network test-net --replicas 1 ghcr.io/zawert879/test-front:272a1f7
+# docker service update --image ghcr.io/zawert879/test-network:46e84bf test-network || docker service create --name test-network --network test-net --publish 80:80 --replicas 1 ghcr.io/zawert879/test-network:46e84bf
