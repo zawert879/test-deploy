@@ -59,9 +59,9 @@ jobs:
           # Start new containers
           docker network create test-net --attachable || true
 
-          docker run -d --name test-back --network test-net ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_test-back_tag.outputs.test-back_tag }}
-          docker run -d --name test-front --network test-net ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_test-front_tag.outputs.test-front_tag }}
-          docker run -d --name test-network --network test-net -p 80:81 ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_test-network_tag.outputs.test-network_tag }}
+          docker run -d --name test-back --network test-net ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }}
+          docker run -d --name test-front --network test-net ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }}
+          docker run -d --name test-network --network test-net -p 80:81 ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }}
 #           docker pull ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }}
 #           docker pull ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }}
 #           docker pull ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }}
