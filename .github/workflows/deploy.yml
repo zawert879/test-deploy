@@ -26,15 +26,15 @@ jobs:
         echo "::set-output name=test-back_tag::${TAG1}"
         TAG2=$(docker run --rm ghcr.io/${{ github.repository_owner }}/test-front:latest cat /app/VERSION)
         echo "::set-output name=test-front_tag::${TAG2}"
-        TAG3=$(docker run --rm ghcr.io/${{ github.repository_owner }}/nginx:latest cat /etc/nginx/VERSION)
-        echo "::set-output name=nginx_tag::${TAG3}"
+        TAG3=$(docker run --rm ghcr.io/${{ github.repository_owner }}/test-network:latest cat /app/VERSION)
+        echo "::set-output name=test-network_tag::${TAG3}"
 
     - name: Remove old image versions
       run: |
         echo "Removing old image versions..."
         docker image rm $(docker image ls ghcr.io/${{ github.repository_owner }}/test-back --format '{{.ID}}' | tail -n +4) || true
         docker image rm $(docker image ls ghcr.io/${{ github.repository_owner }}/test-front --format '{{.ID}}' | tail -n +4) || true
-        docker image rm $(docker image ls ghcr.io/${{ github.repository_owner }}/nginx --format '{{.ID}}' | tail -n +4) || true
+        docker image rm $(docker image ls ghcr.io/${{ github.repository_owner }}/test-network --format '{{.ID}}' | tail -n +4) || true
 
     - name: Deploy to server
       uses: appleboy/ssh-action@master
@@ -45,8 +45,8 @@ jobs:
         script: |
           docker pull ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }}
           docker pull ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }}
-          docker pull ghcr.io/${{ github.repository_owner }}/nginx:${{ steps.get_tags.outputs.nginx_tag }}
+          docker pull ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }}
           
           docker service update --image ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }} test-back || docker service create --name test-back --network app-network --replicas 1 ghcr.io/${{ github.repository_owner }}/test-back:${{ steps.get_tags.outputs.test-back_tag }}
           docker service update --image ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }} test-front || docker service create --name test-front --network app-network --replicas 1 ghcr.io/${{ github.repository_owner }}/test-front:${{ steps.get_tags.outputs.test-front_tag }}
-          docker service update --image ghcr.io/${{ github.repository_owner }}/nginx:${{ steps.get_tags.outputs.nginx_tag }} nginx || docker service create --name nginx --network app-network --publish 80:80 --replicas 1 ghcr.io/${{ github.repository_owner }}/nginx:${{ steps.get_tags.outputs.nginx_tag }}
+          docker service update --image ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }} test-network || docker service create --name test-network --network app-network --publish 80:80 --replicas 1 ghcr.io/${{ github.repository_owner }}/test-network:${{ steps.get_tags.outputs.test-network_tag }}
