@@ -26,7 +26,7 @@ jobs:
         echo "::set-output name=test-back_tag::${TAG1}"
         TAG2=$(docker run --rm ghcr.io/${{ github.repository_owner }}/test-front:latest cat /app/VERSION)
         echo "::set-output name=test-front_tag::${TAG2}"
-        TAG3=$(docker run --rm ghcr.io/${{ github.repository_owner }}/test-network:latest cat /app/VERSION)
+        TAG3=$(docker run --rm ghcr.io/${{ github.repository_owner }}/test-network:latest cat /etc/nginx/VERSION)
         echo "::set-output name=test-network_tag::${TAG3}"
 
     - name: Remove old image versions
